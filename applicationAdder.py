@@ -2,15 +2,12 @@
 from openpyxl import load_workbook
 
 DEFAULT_FILE = "Applications Applied.xlsx"
-#DEFAULT_PATH = "C:\Users\jokih\Documents\Programming\Personal Projects\Application Excel\Applications Applied.xlsx"
-#test = "C:\Users\jokih\Documents\Programming\Personal Projects\Application Excel\ Applications Applied.xlsx"
 TITLE_ROW = 1   #change if your titles are not in this row
 STARTING_COLUMN = 2 #change if your format is different
 STARTING_ROW = 2    #change if your format is different
 
-
+#add a row to the file at the highest unused location
 def addRow(file):
-
 
     #load excel file
     workbook = load_workbook(file)
@@ -44,6 +41,7 @@ def addRow(file):
     workbook.save(file)
     workbook.close()
 
+#not implemented will update the input row
 def updateRow(file):
     """
     #load excel file
@@ -66,6 +64,7 @@ def updateRow(file):
     workbook.close()
     """
 
+#outputs all information in a given row
 def viewRow(file):
     #load excel file
     workbook = load_workbook(file)
@@ -99,7 +98,8 @@ def viewRow(file):
     #save file
     workbook.save(file)
     workbook.close()
-    
+
+#returns the row number if a row in the file has the same name as position in select columns
 def getRow(file, position):
 
     #load excel file
@@ -130,6 +130,7 @@ def getRow(file, position):
     else:
         return False
 
+#outputs the number of applications(rows) in the file
 def numAppsComp(file):
     #load excel file
     workbook = load_workbook(file, data_only=True)
