@@ -42,9 +42,10 @@ def addRow(file):
 
     #save file
     workbook.save(file)
+    workbook.close()
 
 def updateRow(file):
-
+    """
     #load excel file
     workbook = load_workbook(file)
     #open workbook
@@ -62,9 +63,72 @@ def updateRow(file):
 
     #save file
     workbook.save(file)
+    workbook.close()
+    """
 
-#def viewRow(file):
+def viewRow(file):
+    #load excel file
+    workbook = load_workbook(file)
+    #open workbook
+    sheet = workbook.active
+
+    #Determine if the input Company or Position is Valid
+    inputs = ""
+    print("Which Company or Position would you like to view?")
+    inputs = input()
+    posRow = getRow(file, inputs)
+    while(not posRow):
+        print("Row is not in file! Please double check your spelling and try again or type 'back' to return to menu.")
+        inputs = input()
+
+
+        if(inputs.lower() == "back"):
+            return
+        else:
+            posRow = getRow(file, inputs)
+        
+    currColumn = STARTING_COLUMN
+    for values in posRow:
+        while(currColumn<sheet.max_column+1):
+            print(sheet.cell(row= TITLE_ROW, column= currColumn).value + ":", sheet.cell(row= values, column = currColumn).value)
+            currColumn+=1
+        print("")
+        currColumn = STARTING_COLUMN
+
+    print("Number of applications found:", len(posRow))
+    #save file
+    workbook.save(file)
+    workbook.close()
     
+def getRow(file, position):
+
+    #load excel file
+    workbook = load_workbook(file)
+    #open workbook
+    sheet = workbook.active
+
+    rows = []
+
+    companyCol = STARTING_COLUMN
+    positionCol = STARTING_COLUMN+1
+    currRow = STARTING_ROW
+
+    currCompanyCell = sheet.cell(currRow, companyCol)
+    currPositionCell = sheet.cell(currRow, positionCol)
+    while(currCompanyCell.value and currPositionCell.value):
+        if(currCompanyCell.value.lower() == position.lower() or currPositionCell.value.lower() == position.lower()):
+            rows.append(currRow)
+
+        currRow+=1
+        currCompanyCell = sheet.cell(currRow, companyCol)
+        currPositionCell = sheet.cell(currRow, positionCol)
+        
+        
+    workbook.close()
+    if(len(rows) > 0):
+        return rows
+    else:
+        return False
 
 def numAppsComp(file):
     #load excel file
@@ -73,6 +137,7 @@ def numAppsComp(file):
     sheet = workbook.active
     #Print value in first cell, which is the number of rows written to (number of applications)
     print(sheet.max_row -1)
+    workbook.close()
 
 
 def main():
@@ -81,29 +146,24 @@ def main():
     x = input()
     filenames = ""
     if(x != ""):
-        print(x)
         filenames = x + ".xlsx"
     else:
-        print("Default File")
         filenames = DEFAULT_FILE
 
     
     inputs = ""
     while(inputs.upper() != "0"):
         print("NOTE!! If file is open, no additions can be added only viewing!")
-        print("1: Add new row to spreadsheet? \n2: Update existing row? (Not Implemented) \n3: View Row Data? (Not Implemented) \n4: View Number of Applications \n0: Exit Program")
+        print("1: Add new row to spreadsheet? \n2: Update existing row? (Not Implemented) \n3: View Row Data? \n4: View Number of Applications \n0: Exit Program")
         inputs = input()
         if(inputs == "1"):
             addRow(filenames)
-            print("Added Complete")
         elif(inputs == "2"):
             #updateRow(filenames)
             print("Update Completed")
         elif(inputs == "3"):
-            #viewRow(filenames)
-            print("Viewed Row")
+            viewRow(filenames)
         elif(inputs == "4"):
-            print("Viewed Total Number")
             numAppsComp(filenames)
 
     return
@@ -111,4 +171,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    print("Completed")
+    print("Good Night!")
